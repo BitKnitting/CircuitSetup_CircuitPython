@@ -1,6 +1,7 @@
 # from atm90e32_registers import *
 from adafruit_bus_device.spi_device import SPIDevice
 import math
+import time
 
 
 
@@ -261,7 +262,7 @@ class ATM90e32:
         # sqrt(2) = 1.41421356
         fvSagTh = (sagV * 100 * 1.41421356) / (2 * _ugain / 32768)
         # convert to int for sending to the atm90e32.
-        vSagTh = self.round_number(fvSagTh)
+        vSagTh = self._round_number(fvSagTh)
 
         self._spi_rw(SPI_WRITE, SoftReset, 0x789A)   # Perform soft reset
         self._spi_rw(SPI_WRITE, CfgRegAccEn, 0x55AA) # enable register config access
@@ -363,37 +364,37 @@ class ATM90e32:
         return reading  
 
     #####################################################################################
-    def _spi_rw(self, read, address, value):
-        # If read = 1, There needs to be a 1 in the highest bit of the address
-        address |= read << 7
-        print('read: ' + str(read) + ' Address: ' + hex(address) + '. value: ' + hex(value))
-        # The Arduino library put us sleeps in...I was getting correct results
-        # without adding sleeps???
-        # usleep = lambda x: time.sleep(x/1000000.0)
-        if read:
-            bytes_read = bytearray(2)
+    def _spi_rw(self, rw, address, value):
+        # Get address ready for SPI #########################
+        # set read/write flag 
+        address |= rw << 15
+        # swap bytes and put into byte array
+        bytes_address = address.to_bytes(2,'big')
+        ######################################################       
+        # The Arduino library put us sleeps in...
+        usleep = lambda x: time.sleep(x/1000000.0)
+        # Write address to SPI
+        with self._device as spi:
+            print('before spi address write.')
+            spi.write(bytes_address)
+            print('after spi address write.')
+        if rw:  # if True, reading from a register
+            read_buf = bytearray(2)
             with self._device as spi:
-                # delays were in the Arduino library
-                # usleep(10)
-                spi.write(bytearray([address]))
                 # from Arduino lib: "Must wait 4 us for data to become valid"
-                # usleep(4)
-                spi.readinto(bytes_read)
-                if bytes_read[0] == 0xff:  # The CT is facing the wrong way...
-                    return -1
-                value = int.from_bytes(bytes_read, 'big', True)
+                usleep(4)
+                spi.readinto(read_buf)
+                value = int.from_bytes(read_buf, 'big')
                 return value
         else:  # Write the two bytes of the value.
-            first_byte = value >> 8
-            second_byte = value & 0xff
+            bytes_value = value.to_bytes(2,'big')
             with self._device as spi:
-                # usleep(10)
-                spi.write(bytearray([address]))
-                # usleep(4)
-                spi.write(bytearray([first_byte]))
-                spi.write(bytearray([second_byte]))
+                usleep(4)
+                print('before spi write.')
+                spi.write(bytes_value)
+                print('after spi write.')
     
-    def round_number(self,f_num):
+    def _round_number(self,f_num):
         if f_num - math.floor(f_num) < 0.5:
             return math.floor(f_num)
         return math.ceil(f_num)    
