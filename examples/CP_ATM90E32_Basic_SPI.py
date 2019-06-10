@@ -1,4 +1,4 @@
-import time
+
 import digitalio
 import board
 import busio
