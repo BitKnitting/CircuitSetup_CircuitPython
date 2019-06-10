@@ -63,7 +63,7 @@ print('Frequency: {}Hz'.format(energy_sensor.frequency))
 # Sending and Receiving SPI
 [atm90e32.py](src/atm90e32.py) provides the ATM90e32 class.  It's job is to abstract the register names into "easy to understand" properites (such as the ```active_power``` property).  Then send and receive bytes over SPI in a way that the atm90e32 understands.
 
-Writing this library was easy because of [Circuit Setup's Arduino code](https://github.com/CircuitSetup/Split-Single-Phase-Energy-Meter/tree/master/Software/libraries/ATM90E32)
+Writing this library was easy because of [Circuit Setup's Arduino code](https://github.com/CircuitSetup/Split-Single-Phase-Energy-Meter/tree/master/Software/libraries/ATM90E32).  Given python's strength in string manipulation, I was able to write [a simple script](arduino_to_python/register_from_ard_to_py.py) that converted the Arduino [ATM90E32.h](https://github.com/CircuitSetup/Split-Single-Phase-Energy-Meter/blob/master/Software/libraries/ATM90E32/ATM90E32.h) to an equivalent file I could use with CircuitPython.
 This is all about reading and writing over SPI to the atm90e32's registers.    
 * Step 1: I "converted" the [ATM90E32.h include file](https://github.com/CircuitSetup/Split-Single-Phase-Energy-Meter/blob/master/Software/libraries/ATM90E32/ATM90E32.h) into an equivalent python file using [register_from_ard_to_py.py script](arduino_to_python/register_from_ard_to_py.py).  
 * Step 2: Copy / munged a bit / pasted code from my [atm90e26 Circuit Python library](https://github.com/BitKnitting/HappyDay_ATM90e26_CircuitPython).
