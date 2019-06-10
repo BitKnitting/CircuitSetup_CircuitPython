@@ -38,9 +38,9 @@ if (lineFreq == 4485):  # split single phase
     totalVoltage = voltageA + voltageC
 else:
     totalVoltage = voltageA  # 220-240v
-# print('Voltage 1: {}V'.format(voltageA))
-# print('Voltage 2: {}V'.format(voltageC))
-# print('Current 1: {}A'.format(energy_sensor.line_currentA))
-# print('Current 2: {}A'.format(energy_sensor.line_currentC))
-# print('Frequency: {}Hz'.format(energy_sensor.frequency))
+print('Voltage 1: {}V'.format(voltageA))
+print('Voltage 2: {}V'.format(voltageC))
+print('Current 1: {}A'.format(energy_sensor.line_currentA))
+print('Current 2: {}A'.format(energy_sensor.line_currentC))
+print('Frequency: {}Hz'.format(energy_sensor.frequency))
 print('Active Power: {}W'.format(energy_sensor.active_power))

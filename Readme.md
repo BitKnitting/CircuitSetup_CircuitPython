@@ -1,5 +1,6 @@
 
 # CircuitPython for the Single Phase Energy Monitor
+__TODO__: I did not implement all the mehods/properties that are in the Arduino port.  I am hoping through Open Source that someone (you?) would like to add more.  
 
 # Thanks to Those that went Before
 There is _so much_ prior work that made it easier to write a CP library for the atm90e32.  Efforts include:  
@@ -64,6 +65,18 @@ print('Frequency: {}Hz'.format(energy_sensor.frequency))
 [atm90e32.py](src/atm90e32.py) provides the ATM90e32 class.  It's job is to abstract the register names into "easy to understand" properites (such as the ```active_power``` property).  Then send and receive bytes over SPI in a way that the atm90e32 understands.
 
 Writing this library was easy because of [Circuit Setup's Arduino code](https://github.com/CircuitSetup/Split-Single-Phase-Energy-Meter/tree/master/Software/libraries/ATM90E32).  Given python's strength in string manipulation, I was able to write [a simple script](arduino_to_python/register_from_ard_to_py.py) that converted the Arduino [ATM90E32.h](https://github.com/CircuitSetup/Split-Single-Phase-Energy-Meter/blob/master/Software/libraries/ATM90E32/ATM90E32.h) to an equivalent file I could use with CircuitPython.
-This is all about reading and writing over SPI to the atm90e32's registers.    
-* Step 1: I "converted" the [ATM90E32.h include file](https://github.com/CircuitSetup/Split-Single-Phase-Energy-Meter/blob/master/Software/libraries/ATM90E32/ATM90E32.h) into an equivalent python file using [register_from_ard_to_py.py script](arduino_to_python/register_from_ard_to_py.py).  
-* Step 2: Copy / munged a bit / pasted code from my [atm90e26 Circuit Python library](https://github.com/BitKnitting/HappyDay_ATM90e26_CircuitPython).
+# Example Output
+After running the code within the Mu editor, the results were:  
+```
+Sys status:  S0:0x370   S1:0x2a0c
+meter status E0: 0x300 S1:0x220c
+Last SPI read: 0x220c
+Voltage 1: 119.21V
+Voltage 2: 107.95V
+Current 1: 9.903A
+Current 2: 0.012A
+Frequency: 59.98Hz
+Active Power: 1168.84W
+```
+Here is my setup:  
+![image of setup](images/test_setup.jpg)
